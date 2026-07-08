@@ -724,7 +724,7 @@ function scaleAll() {
     const barEl   = document.getElementById(`bar-${key}`);
 
     if (scaleEl) {
-      scaleEl.style.transformOrigin = 'top center';
+      scaleEl.style.transformOrigin = 'left center';
       scaleEl.style.transform = `scale(${scale})`;
       scaleEl.style.width = nW + 'px';
       scaleEl.style.height = Math.round(nH * scale) + 'px';
