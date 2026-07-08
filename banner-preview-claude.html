@@ -190,13 +190,7 @@
     .toast.show { opacity: 1; transform: translateY(0); }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
-    @media (max-width: 1100px) {
-      .canvas     { padding: 16px; gap: 20px; overflow-x: hidden; overflow-y: auto; align-items: stretch; }
-      .section-grid { gap: 20px; flex-direction: column; flex-wrap: nowrap; align-items: center; width: 100%; }
-      .bcard      { align-items: center; width: 100% !important; max-width: 100% !important; flex-basis: auto !important; }
-      .bcard-bar  { opacity: 1; }
-    }
-  
+    
     /* ── Mobile ≤ 700px ── */
     @media (max-width: 700px) {
       .shell      { flex-direction: column; }
@@ -217,8 +211,11 @@
       .btn-sm .lbl { display: none; }
       .btn-sm     { padding: 0 8px; }
       .view-grp   { display: none; }
-      .canvas     { padding-bottom: 150px;}
+      .canvas     { padding: 16px; gap: 20px; overflow-x: hidden; overflow-y: auto; align-items: stretch; padding-bottom: 150px;}
+      .section-grid { gap: 20px; flex-direction: column; flex-wrap: nowrap; align-items: center; width: 100%; }
       .canvas-section + .canvas-section { padding-top: 20px; }
+      .bcard      { align-items: center; width: 100% !important; max-width: 100% !important; flex-basis: auto !important; }
+      .bcard-bar  { opacity: 1; }
       /* JS sets transform/width/marginBottom on .bcard-scale */
       .bcard-scale { transform-origin: top center!important; }
       .s-foot     { flex-direction: row; flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
