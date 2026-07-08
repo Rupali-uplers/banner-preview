@@ -727,7 +727,8 @@ function scaleAll() {
       scaleEl.style.transformOrigin = 'top center';
       scaleEl.style.transform = `scale(${scale})`;
       scaleEl.style.width = nW + 'px';
-      scaleEl.style.marginBottom = `-${Math.round(nH * (1 - scale))}px`;
+      scaleEl.style.height = Math.round(nH * scale) + 'px';
+      scaleEl.style.marginBottom = '0';
     }
 
     if (barEl) {
