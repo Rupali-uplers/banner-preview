@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Creative Collection</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+  ┌─────────────────────────────────────────┐
+  │ FAVICON — swap href with your icon path │
+  └─────────────────────────────────────────┘
+  -->
+  <link rel="icon" href="" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://lp.project-progress.net" crossorigin>
+  <link rel="dns-prefetch" href="//lp.project-progress.net">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:          #F0F0EE;
+      --surface:     #FFFFFF;
+      --border:      #E2E2DE;
+      --border-mid:  #C8C8C4;
+      --txt:         #1A1A18;
+      --txt-2:       #6B6B67;
+      --txt-3:       #A0A09C;
+      --accent:      #2563EB;
+      --accent-bg:   #EFF4FF;
+      --accent-bdr:  #BFCEFD;
+      --accent-dark: #1D4ED8;
+      --amber:       #D97706;
+      --amber-bg:    #FFFBEB;
+      --amber-bdr:   #FDE68A;
+      --sidebar-w:   220px;
+      --bar-h:       52px;
+      --r:           8px;
+      --font:        'Inter', system-ui, sans-serif;
+      --mono:        'JetBrains Mono', monospace;
+    }
+    html, body  { height: 100%; overflow: hidden; }
+    body        { font-family: var(--font); background: var(--bg); color: var(--txt); font-size: 14px; }
+    .shell      { display: flex; height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar    { width: var(--sidebar-w); min-width: var(--sidebar-w); height: 100%; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; z-index: 10; }
+    .s-head     { padding: 14px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .eyebrow    { font-size: 10px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--txt-3); margin-bottom: 6px; }
+    .sel-wrap   { position: relative; }
+    .sel-wrap select { width: 100%; padding: 7px 28px 7px 10px; border: 1px solid var(--border-mid); border-radius: var(--r); background: var(--bg); font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--txt); cursor: pointer; appearance: none; outline: none; transition: border-color .15s, box-shadow .15s; }
+    .sel-wrap select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+    .sel-wrap .caret { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--txt-3); display: flex; }
+    .campaign-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; }
+    .campaign-meta b { color: var(--txt); font-weight: 500; }
+    .campaign-meta .meta-date { color: var(--txt-3); font-size: 11.5px; }
+
+    /* Size list */
+    .s-body     { flex: 1; overflow-y: auto; padding: 10px 8px; }
+    .sec-row    { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 6px; margin: 10px 0 8px; }
+    .sec-lbl    { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--txt-3); }
+    .sec-count  { font-family: var(--mono); font-size: 11px; color: var(--txt-3); }
+    .type-group { margin-bottom: 10px; }
+    .type-tag   { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 8px; border: 1px solid var(--border); border-radius: var(--r); background: var(--bg); color: var(--txt-2); font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-align: left; cursor: default; }
+    .type-tag.disabled { opacity: .4; }
+    .type-tag-count { font-family: var(--mono); font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--txt-3); }
+    .size-list  { list-style: none; margin-top: 4px; }
+    /* Indent size items under their group */
+    .type-group .size-list .size-item { padding-left: 10px; }
+    .size-item  { display: flex; align-items: center; justify-content: space-between; padding: 4px; border-radius: var(--r); cursor: pointer; user-select: none; border: 1px solid transparent; transition: background .1s; }
+    .size-item:hover  { background: var(--bg); }
+    .size-item.active { background: var(--accent-bg); border-color: var(--accent-bdr); }
+    .size-item.active .sl { color: var(--accent-dark); font-weight: 500; }
+    .size-item.active .sw { color: var(--accent-dark); opacity: .7; }
+    .sl { font-family: var(--mono); font-size: 12px; color: var(--txt); }
+    .preview-link { font-size: 12px; text-decoration: none; padding: 2px 5px; line-height: 12px; display: flex; align-items: center; justify-content: center;
+    vertical-align: middle; color: var(--txt); transition: ease all 0.3s;}
+    .preview-link:hover { color: var(--accent); transform: scale(1.1); }
+
+    /* Sidebar footer */
+    .s-foot     { padding: 10px 8px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .btn        { width: 100%; padding: 8px 10px; border-radius: var(--r); font-family: var(--font); font-size: 12.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; outline: none; transition: background .15s, color .15s; white-space: nowrap; }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border-mid) !important; color: var(--txt-2); }
+    .btn-ghost:hover  { background: var(--bg); color: var(--txt); }
+    .btn-backup { background: transparent; border: 1px solid var(--border-mid) !important; color: var(--txt-2); }
+    .btn-backup:hover { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-bdr) !important; }
+    .btn-backup.on    { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-bdr) !important; font-weight: 500; }
+    .btn-valid  { background: transparent; border: 1px solid var(--border-mid) !important; color: var(--txt-2); }
+    .btn-valid:hover  { background: #F0FDF4; color: #16A34A; border-color: #86EFAC !important; }
+    .btn-valid.no-url { opacity: .4; cursor: not-allowed; pointer-events: none; }
+    .btn-dl     { background: var(--accent); color: #fff; font-weight: 500; }
+    .btn-dl:hover     { background: var(--accent-dark); }
+    .btn-dl.no-url    { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+    /* ── Main ── */
+    .main       { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; overflow: hidden; }
+    .topbar     { height: var(--bar-h); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--surface); border-bottom: 1px solid var(--border); gap: 10px; }
+    .t-left, .t-right { display: flex; align-items: center; gap: 8px; }
+    .mob-menu-btn { display: none; width: 34px; height: 34px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; align-items: center; justify-content: center; color: var(--txt-2); flex-shrink: 0; }
+    .nav-btn    { width: 28px; height: 28px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--txt-2); transition: background .1s; flex-shrink: 0; }
+    .nav-btn:hover    { background: var(--bg); }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+    .pill       { font-size: 12px; color: var(--txt-3); white-space: nowrap; padding: 3px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; }
+    .btn-sm     { height: 28px; padding: 0 11px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: var(--font); font-size: 12px; color: var(--txt-2); white-space: nowrap; transition: background .1s; }
+    .btn-sm:hover { background: var(--bg); color: var(--txt); }
+    .btn-sm .lbl { display: inline; }
+    .view-grp   { display: flex; border: 1px solid var(--border-mid); border-radius: var(--r); overflow: hidden; }
+    .vbtn       { width: 28px; height: 28px; border: none; border-right: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--txt-3); transition: background .1s; }
+    .vbtn:last-child { border-right: none; }
+    .vbtn.active { background: var(--bg); color: var(--txt); }
+
+    /* ── Canvas ── */
+    .canvas     { flex: 1; overflow: auto; padding: 24px; display: flex; flex-direction: column; gap: 28px; align-items: stretch; }
+    .canvas-section { width: 100%; }
+    .canvas-section + .canvas-section { border-top: 1px solid var(--border); padding-top: 24px; }
+    .section-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--txt-3); margin-bottom: 14px; padding: 0 2px; }
+    .section-grid { display: flex; flex-wrap: wrap; gap: 24px; align-content: flex-start; align-items: flex-start; }
+    .canvas.rows .section-grid { flex-direction: column; flex-wrap: nowrap; }
+
+    /* ── Banner card ── */
+    .bcard      { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; }
+    .bcard-bar  { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 2px; margin-bottom: 6px; opacity: .55; transition: opacity .15s; }
+    .bcard:hover .bcard-bar { opacity: 1; }
+    .bar-left   { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+    .bar-right  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .bar-size   { font-family: var(--mono); font-size: 11px; color: var(--txt-2); white-space: nowrap; }
+    .bar-weight { font-family: var(--mono); font-size: 10.5px; color: var(--txt-3); white-space: nowrap; }
+    .tag        { font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; border-radius: 20px; padding: 2px 6px; white-space: nowrap; flex-shrink: 0; }
+    .tag-backup { display: none; background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bdr); }
+    .reload-btn { width: 22px; height: 22px; border: none; background: transparent; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: var(--txt-3); transition: background .1s, color .1s; flex-shrink: 0; }
+    .reload-btn:hover { background: rgba(0,0,0,.07); color: var(--txt); }
+
+    /* frame-wrap: shadow always matches visible content size */
+    .frame-wrap {
+      position: relative; overflow: hidden; flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.07), 0 8px 24px rgba(0,0,0,.05);
+    }
+
+    /*
+      iframe hidden until fully loaded.
+      frame-wrap.is-ready reveals it — no mid-animation flash.
+    */
+    .bcard-frame {
+      display: block; border: none; background: #fff;
+      opacity: 0; visibility: hidden;
+      transition: opacity .2s ease;
+    }
+    .frame-wrap.is-ready .bcard-frame { opacity: 1; visibility: visible; }
+
+    /* Loading overlay — sits above iframe, fades out on is-ready */
+    .frame-loading {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      padding: clamp(8px, calc(var(--frame-w, 300px) * 0.06), 22px);
+      background: #fff;
+      transition: opacity .2s ease, visibility .2s ease;
+    }
+    .frame-wrap.is-ready .frame-loading { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loading-stack {
+      width: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: clamp(6px, calc(var(--frame-h, 250px) * 0.04), 16px);
+      text-align: center;
+    }
+    .frame-wrap.is-short .loading-stack { flex-direction: row; gap: 8px; text-align: left; }
+    .loading-mark {
+      width:  clamp(18px, calc(var(--frame-w, 300px) * 0.12), 40px);
+      height: clamp(18px, calc(var(--frame-w, 300px) * 0.12), 40px);
+      border-radius: 50%;
+      border: 2px solid rgba(37,99,235,.15); border-top-color: var(--accent);
+      animation: spin .9s linear infinite; flex-shrink: 0;
+    }
+    .loading-title {
+      font-size: clamp(9px, calc(var(--frame-w, 300px) * 0.047), 13px);
+      font-weight: 600; color: var(--txt-2); line-height: 1.3;
+    }
+    .loading-sub {
+      font-size: clamp(8px, calc(var(--frame-w, 300px) * 0.033), 11px);
+      color: var(--txt-3); margin-top: 2px; line-height: 1.3;
+    }
+    .frame-wrap.is-short .loading-title { font-size: clamp(8px, calc(var(--frame-h, 90px) * 0.22), 11px); }
+    .frame-wrap.is-short .loading-sub   { font-size: clamp(7px, calc(var(--frame-h, 90px) * 0.16), 10px); margin-top: 1px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .bcard-backup-link { display: none; position: absolute; inset: 0; }
+    .bcard-backup-link img { width: 100%; height: 100%; object-fit: cover; display: block; border: none; }
+    .bcard-backup-link.no-link { cursor: default; pointer-events: none; }
+
+    .overlay    { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 19; }
+    .overlay.show { display: block; }
+    .toast      { position: fixed; bottom: 20px; right: 20px; padding: 10px 16px; border-radius: var(--r); background: var(--txt); color: #fff; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(6px); transition: opacity .18s, transform .18s; pointer-events: none; z-index: 100; max-width: calc(100vw - 40px); }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+
+    /* ── Mobile ≤ 700px ── */
+    @media (max-width: 700px) {
+      .shell      { flex-direction: column; }
+      .sidebar {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        width: 100%; min-width: unset; height: auto; max-height: 75vh;
+        border-right: none; border-top: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 24px rgba(0,0,0,.12);
+        transform: translateY(100%);
+        transition: transform .28s cubic-bezier(.32,.72,0,1);
+        z-index: 20; overflow: hidden;
+      }
+      .sidebar.open { transform: translateY(0); }
+      .s-head::before { content: ''; display: block; width: 36px; height: 4px; background: var(--border-mid); border-radius: 2px; margin: 0 auto 12px; }
+      .topbar     { padding: 0 12px; }
+      .mob-menu-btn { display: flex; }
+      .btn-sm .lbl { display: none; }
+      .btn-sm     { padding: 0 8px; }
+      .view-grp   { display: none; }
+      .canvas     { padding: 16px; gap: 20px; overflow-x: hidden; overflow-y: auto; align-items: stretch; }
+      .section-grid { gap: 20px; flex-direction: column; flex-wrap: nowrap; align-items: center; width: 100%; }
+      .canvas-section + .canvas-section { padding-top: 20px; }
+      .bcard      { align-items: center; width: 100% !important; max-width: 100% !important; flex-basis: auto !important; }
+      .bcard-bar  { opacity: 1; }
+      /* JS sets transform/width/marginBottom on .bcard-scale */
+      .bcard-scale { transform-origin: top center; }
+      .s-foot     { flex-direction: row; flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
+      .s-foot .btn { width: auto; flex: 1; min-width: 90px; font-size: 11px; padding: 8px 6px; }
+    }
+    @media (max-width: 400px) {
+      .pill { font-size: 10px; padding: 3px 6px; }
+      .s-foot .btn { font-size: 10.5px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="shell">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="s-head">
+      <div class="eyebrow">Campaign</div>
+      <div class="sel-wrap">
+        <select id="campaignSelect" onchange="switchCampaign(this.value)"></select>
+        <span class="caret">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+      <div class="campaign-meta" id="campaignMeta"></div>
+    </div>
+    <div class="s-body">
+      <div class="sec-row">
+        <div class="sec-lbl">Ad sizes</div>
+        <div class="sec-count" id="sizeTotal"></div>
+      </div>
+      <ul class="size-list" id="sizeList"></ul>
+    </div>
+    <div class="s-foot">
+      <button class="btn btn-ghost" onclick="showAll();closeSidebar();">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x=".75" y=".75" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.75" y=".75" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x=".75" y="7.75" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.75" y="7.75" width="4.5" height="4.5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+        Show all
+      </button>
+      <button class="btn btn-backup" id="backupBtn" onclick="toggleBackup()">
+        <span id="backupIcon">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 9l3-3 2.5 2.5L10 5l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span id="backupLabel">Backups</span>
+      </button>
+      <button class="btn btn-valid" id="validatorBtn" onclick="openValidator()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        HTML5 Validator
+      </button>
+      <button class="btn btn-dl" id="downloadBtn" onclick="downloadAll()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 10v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Download all files
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="t-left">
+        <button class="mob-menu-btn" onclick="openSidebar()" aria-label="Open menu">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="2" y1="4" x2="14" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="nav-btn" id="prevBtn" onclick="navigate(-1)" disabled title="Previous (←)">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7L9 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="pill" id="counter"></span>
+        <button class="nav-btn" id="nextBtn" onclick="navigate(1)" disabled title="Next (→)">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M5 3L9 7L5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="t-right">
+        <button class="btn-sm" onclick="reloadAll()" title="Reload all (R)">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M13 2v4H9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 12v-4h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.34 5A6 6 0 0 1 11.7 4.3L13 6M1 8l1.3 1.7a6 6 0 0 0 9.36-.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="lbl">Reload all</span>
+        </button>
+        <div class="view-grp">
+          <button class="vbtn active" id="vbtn-grid" onclick="setView('grid')" title="Grid">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+          <button class="vbtn" id="vbtn-row" onclick="setView('row')" title="List">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><line x1="1" y1="3.5" x2="13" y2="3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="10.5" x2="13" y2="10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="canvas" id="canvas"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   PROJECT DATA — set CLIENT once, shared by all campaigns
+═══════════════════════════════════════════════════════════ */
+const CLIENT = 'Alkermes';
+
+/* ═══════════════════════════════════════════════════════════
+   CAMPAIGN DATA — add/edit campaigns here only
+
+   Banner fields:
+     size          — '300x250' etc. (same size can appear in both animated + static)
+     weight        — KB
+     type          — omit = animated | 'static' = static banner
+     iframeUrl     — live hosted banner URL
+     backupImg     — fallback image path/URL ('' = grey placeholder)
+     backupClickUrl— per-banner click URL for backup image (overrides campaign-level)
+
+   Campaign fields:
+     downloadUrl   — Dropbox/Drive link (?dl=1 auto-added for Dropbox)
+     validatorUrl  — HTML5 validator URL ('' = button disabled)
+     backupClickUrl— fallback click URL used by all banners unless overridden per-banner
+═══════════════════════════════════════════════════════════ */
+const CAMPAIGNS = [
+  {
+    id:             'VIV-007531',
+    label:          'VIV-007531',
+    downloadUrl:    'https://www.dropbox.com/scl/fo/qmuys5rhtoldsl9hl0wqx/AFcAWsdQkGo12uIbZ4l9J2A?rlkey=0iizvape4vhe8y4eqw3291517&st=vj5lc7ti&dl=0',
+    validatorUrl:   'https://h5validator.appspot.com/dcm/asset?batch=5911132525690880,4823596575358976,6752028469100544,6092019368329216',
+    backupClickUrl: 'https://www.vivitrolhcp.com/dosing-and-pharmacokinetics',
+    banners: [
+      { size: '300x250', weight: 173, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-V3/300x250', backupImg: 'VIV-007531/backups/300x250.jpg' },
+      { size: '300x600', weight: 185, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-V3/300x600', backupImg: 'VIV-007531/backups/300x600.jpg' },
+      { size: '728x90',  weight: 179, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-V3/728x90',  backupImg: 'VIV-007531/backups/728x90.jpg'  },
+      { size: '320x50',  weight: 18,  iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-V3/320x50',  backupImg: 'VIV-007531/backups/320x50.jpg'  },
+    ],
+  },
+
+  {
+    id:             'VIV-007531-1',
+    label:          'VIV-007531-1',
+    downloadUrl:    'https://www.dropbox.com/scl/fo/iah4lzkxl034vnxiskfpv/AJ-hIsE7YdyhYGTww8T6zdQ?rlkey=2jky2t8ft8i9yrj2pgqsddtl7&st=48mf8t9t&dl=0',
+    validatorUrl:   'https://h5validator.appspot.com/dcm/asset?batch=6156541890265088,5948975247654912,5455647083200512,6729229474070528',
+    backupClickUrl: 'https://www.vivitrolhcp.com/dosing-and-pharmacokinetics',
+    banners: [
+      { size: '300x250', weight: 100, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/300x250', backupImg: 'VIV-007531-1/animated/backups/300x250.jpg' },
+      { size: '300x600', weight: 121, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/300x600', backupImg: 'VIV-007531-1/animated/backups/300x600.jpg' },
+      { size: '728x90',  weight: 120, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/728x90',  backupImg: 'VIV-007531-1/animated/backups/728x90.jpg'  },
+      { size: '320x50',  weight: 21,  iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/320x50',  backupImg: 'VIV-007531-1/animated/backups/320x50.jpg'  },
+      // Static banners — same sizes as animated are safe because card keys use type_size
+      { size: '300x250', weight: 58,  type: 'static', iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/static-banner/300x250', backupImg: 'VIV-007531-1/static/backups/300x250.jpg' },
+      { size: '300x600', weight: 99,  type: 'static', iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/static-banner/300x600', backupImg: 'VIV-007531-1/static/backups/300x600.jpg' },
+      { size: '728x90',  weight: 62,  type: 'static', iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007531-1-V2/static-banner/728x90',  backupImg: 'VIV-007531-1/static/backups/728x90.jpg'  },
+    ],
+  },
+
+  {
+    id:             'VIV-007532',
+    label:          'VIV-007532',
+    downloadUrl:    'https://www.dropbox.com/scl/fo/s9eum136224db3yv7veic/AI-dlggHOqc6zEjgA12yRck?rlkey=e0ye5nklbssu836momx3pbdrm&st=fwbr5upt&dl=0',
+    validatorUrl:   'https://h5validator.appspot.com/dcm/asset?batch=5608797295476736,5197287922466816,4769293760331776',
+    backupClickUrl: 'https://www.vivitrol.com/opioid-dependence/start-a-conversation',
+    banners: [
+      { size: '300x250', weight: 114, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007532-V2/300x250', backupImg: 'VIV-007532/backups/300x250.jpg' },
+      { size: '300x600', weight: 188, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007532-V2/300x600', backupImg: 'VIV-007532/backups/300x600.jpg' },
+      { size: '728x90',  weight: 100, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007532-V2/728x90',  backupImg: 'VIV-007532/backups/728x90.jpg'  },
+    ],
+  },
+
+  {
+    id:             'VIV-007532-1',
+    label:          'VIV-007532-1',
+    downloadUrl:    'https://www.dropbox.com/scl/fo/fhd8kuhh2pw6h6mmsr5f8/ABLvxQPWlMyDPnn5fr9kG7E?rlkey=l4mv2g9pdgx94yjd9cev9atjn&st=tk2hj7ff&dl=0',
+    validatorUrl:   'https://h5validator.appspot.com/dcm/asset?batch=6612918236479488,5901704099397632,4683290798325760',
+    backupClickUrl: 'https://www.vivitrol.com/opioid-dependence/start-a-conversation',
+    banners: [
+      { size: '300x250', weight: 101, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007532-1-V4/300x250/', backupImg: 'VIV-007532-1/backups/300x250.jpg' },
+      { size: '300x600', weight: 174, iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007532-1-V4/300x600',  backupImg: 'VIV-007532-1/backups/300x600.jpg' },
+      { size: '728x90',  weight: 90,  iframeUrl: 'https://lp.project-progress.net/2026/QBFoxhc/Vivitrol/VIV-007532-1-V4/728x90',   backupImg: 'VIV-007532-1/backups/728x90.jpg'  },
+    ],
+  },
+
+  // ── add next campaign here ──────────────────────────────
+];
+
+/* ═══════════════════════════════════════════════════════════
+   SIZE DIMENSIONS — add new sizes here if needed
+═══════════════════════════════════════════════════════════ */
+const DIMS = {
+  '160x600': { w: 160, h: 600 },
+  '300x250': { w: 300, h: 250 },
+  '300x600': { w: 300, h: 600 },
+  '320x50':  { w: 320, h: 50  },
+  '728x90':  { w: 728, h: 90  },
+  '970x90':  { w: 970, h: 90  },
+  '970x250': { w: 970, h: 250 },
+};
+
+const WIDE  = new Set(['728x90', '970x90', '970x250']);
+const SHORT = new Set(['728x90', '320x50', '970x90']);
+
+const SVG_RELOAD    = `<svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M13 2v4H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 12v-4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.34 5A6 6 0 0 1 11.7 4.3L13 6M1 8l1.3 1.7a6 6 0 0 0 9.36-.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_IMG_ICON  = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 9l3-3 2.5 2.5L10 5l3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_PLAY_ICON = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><polygon points="3,2 11,7 3,12" fill="currentColor"/></svg>`;
+
+let campaign   = null;
+let idx        = -1;
+let backupMode = false;
+
+const isMob = () => document.getElementById('canvas').clientWidth <= 700;
+
+/*
+  cardKey(b) — unique key per banner card.
+  FIX: campaigns with the same size in both animated and static
+  (e.g. VIV-007531-1 has 300x250 animated + 300x250 static) used to
+  share the same DOM id, breaking JS lookups. Now we prefix with type.
+*/
+const cardKey  = b => `${b.type === 'static' ? 'static' : 'animated'}_${b.size}`;
+const frameId  = b => `f_${campaign.id}_${cardKey(b)}`;
+
+/* Safe cache-bust: strip any existing v= param first */
+function bustUrl(url, token = Date.now()) {
+  const clean = url.replace(/([?&])v=\d+(&|$)/, (_, p, s) => s ? p : '');
+  return clean + (clean.includes('?') ? '&' : '?') + 'v=' + token;
+}
+
+/* Banner grouping helpers */
+const isStatic   = b => b.type === 'static';
+const isAnimated = b => !isStatic(b);
+const sortBySize = list => [...list].sort((a, b) => {
+  const [aw, ah] = a.size.split('x').map(Number);
+  const [bw, bh] = b.size.split('x').map(Number);
+  return aw !== bw ? aw - bw : ah - bh;
+});
+const animatedBanners = (c = campaign) => c ? sortBySize(c.banners.filter(isAnimated)) : [];
+const staticBanners   = (c = campaign) => c ? sortBySize(c.banners.filter(isStatic))   : [];
+const orderedBanners  = (c = campaign) => animatedBanners(c).concat(staticBanners(c));
+
+/* Resolve backup click URL: banner-level → campaign-level → none */
+const resolveClickUrl = b =>
+  (b.backupClickUrl && b.backupClickUrl.trim()) ||
+  (campaign.backupClickUrl && campaign.backupClickUrl.trim()) || '';
+
+/* ── Init ─────────────────────────────────────── */
+function init() {
+  const sel = document.getElementById('campaignSelect');
+  sel.innerHTML = CAMPAIGNS.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+  switchCampaign(CAMPAIGNS[0].id);
+}
+
+/* ── Mobile sidebar ───────────────────────────── */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');    document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+
+/* ── Switch campaign ──────────────────────────── */
+function switchCampaign(id) {
+  campaign = CAMPAIGNS.find(c => c.id === id);
+  if (!campaign) return;
+  idx = -1; backupMode = false;
+  document.title = `${CLIENT} - Creative Collection`;
+  renderMeta(); renderSizeList(); renderCanvas();
+  updateCounter(); updateNav(); updateDlBtn(); updateValidatorBtn(); updateBackupBtn();
+}
+
+function renderMeta() {
+  const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  document.getElementById('campaignMeta').innerHTML =
+    `<b>${CLIENT}</b><span class="meta-date">${date}</span>`;
+}
+
+/* ── Sidebar size list ────────────────────────── */
+function renderSizeList() {
+  document.getElementById('sizeTotal').textContent = campaign.banners.length;
+  document.getElementById('sizeList').innerHTML =
+    renderTypeGroup('Animated', animatedBanners()) +
+    renderTypeGroup('Static',   staticBanners());
+  syncActiveSizeItem();
+}
+
+function renderTypeGroup(label, banners) {
+  const disabled = !banners.length;
+  /*
+    FIX: data-filter now uses cardKey (e.g. "animated_300x250")
+    so filtering correctly targets the right card even when
+    animated and static share the same pixel size.
+  */
+  const items = banners.map(b =>
+    `<li class="size-item" data-filter="${cardKey(b)}"
+         onclick="filterByKey('${cardKey(b)}',this);closeSidebar();">
+       <span class="sl">${b.size.replace('x', ' × ')}</span>
+       <a class="preview-link"
+        href="${b.iframeUrl}"
+        target="_blank"
+        rel="noopener noreferrer"
+        onclick="event.stopPropagation();"
+        title="Open individual preview">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+       xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 5H19V10" stroke="currentColor" stroke-width="1.3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 14L19 5" stroke="currentColor" stroke-width="1.3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M19 14V19H5V5H10" stroke="currentColor" stroke-width="1.3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+      </a>
+     </li>`
+  ).join('');
+  return `
+    <li class="type-group">
+      <div class="type-tag${disabled ? ' disabled' : ''}">
+        <span>${label}</span>
+        <span class="type-tag-count">${banners.length}</span>
+      </div>
+      ${items ? `<ul class="size-list">${items}</ul>` : ''}
+    </li>`;
+}
+
+function syncActiveSizeItem() {
+  document.querySelectorAll('.size-item').forEach(i => i.classList.remove('active'));
+  if (idx < 0) return;
+  const b = orderedBanners()[idx];
+  if (!b) return;
+  const el = document.querySelector(`.size-item[data-filter="${cardKey(b)}"]`);
+  if (el) el.classList.add('active');
+}
+
+/* ── Canvas ───────────────────────────────────── */
+function renderCanvas() {
+  let html = '';
+  const animated = animatedBanners();
+  const statics  = staticBanners();
+  if (animated.length) html += renderSection('Animated', animated);
+  if (statics.length)  html += renderSection('Static',   statics);
+  document.getElementById('canvas').innerHTML = html;
+  applyBackupMode();
+  requestAnimationFrame(() => {
+    scheduleScaleAll();
+    loadAllFrames();
+  });
+}
+
+function renderSection(label, banners) {
+  return `
+    <section class="canvas-section">
+      <div class="section-label">${label}</div>
+      <div class="section-grid">${banners.map(renderCard).join('')}</div>
+    </section>`;
+}
+
+function renderCard(b) {
+  const d    = DIMS[b.size] || { w: 300, h: 250 };
+  const fid  = frameId(b);
+  const key  = cardKey(b);
+  const lbl  = b.size.replace('x', ' × ');
+  const wide = WIDE.has(b.size)  ? `style="flex-basis:100%;max-width:${d.w + 4}px;"` : '';
+  const sh   = SHORT.has(b.size) ? ' is-short' : '';
+  const clickUrl = resolveClickUrl(b);
+  const bkSrc = b.backupImg && b.backupImg.trim()
+    ? b.backupImg.trim()
+    : placeholderSvg(d.w, d.h, b.size);
+  const linkO = clickUrl
+    ? `<a class="bcard-backup-link" href="${clickUrl}" target="_blank" rel="noopener noreferrer">`
+    : `<span class="bcard-backup-link no-link">`;
+  const linkC = clickUrl ? `</a>` : `</span>`;
+
+  /*
+    card id, bar id, scale id, loading id all use cardKey (type_size)
+    so animated_300x250 and static_300x250 never collide.
+  */
+  return `
+  <div class="bcard" data-key="${key}" data-size="${b.size}" data-w="${d.w}" data-h="${d.h}" id="card-${key}" ${wide}>
+    <div class="bcard-bar" id="bar-${key}">
+      <div class="bar-left">
+        <span class="bar-size">${lbl}</span>
+      </div>
+      <div class="bar-right">
+        <span class="bar-weight">${b.weight} KB</span>
+        <button class="reload-btn" onclick="reloadFrame('${fid}')" title="Reload">${SVG_RELOAD}</button>
+      </div>
+    </div>
+    <div class="bcard-scale" id="scale-${key}">
+      <div class="frame-wrap${sh}" id="wrap-${key}"
+           style="width:${d.w}px;height:${d.h}px;--frame-w:${d.w}px;--frame-h:${d.h}px;">
+        <div class="frame-loading" id="loading-${key}">
+          <div class="loading-stack">
+            <div class="loading-mark"></div>
+            <div>
+              <div class="loading-title">Loading banner</div>
+              <div class="loading-sub">${lbl}</div>
+            </div>
+          </div>
+        </div>
+        <iframe class="bcard-frame"
+          src="about:blank"
+          data-src="${b.iframeUrl}"
+          width="${d.w}" height="${d.h}"
+          id="${fid}" title="${lbl}"
+          scrolling="no"></iframe>
+        ${linkO}<img src="${bkSrc}" width="${d.w}" height="${d.h}" alt="${lbl} backup" draggable="false">${linkC}
+      </div>
+    </div>
+  </div>`;
+}
+
+function placeholderSvg(w, h, label) {
+  return 'data:image/svg+xml,' +
+    `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'>
+      <rect width='${w}' height='${h}' fill='%23E8E8E4'/>
+      <text x='50%' y='40%' font-family='system-ui,sans-serif' font-size='13' fill='%23A0A09C' text-anchor='middle' dominant-baseline='middle'>${label}</text>
+      <text x='50%' y='60%' font-family='system-ui,sans-serif' font-size='11' fill='%23C0C0BC' text-anchor='middle' dominant-baseline='middle'>Backup image</text>
+    </svg>`;
+}
+
+/* ── Frame loading ────────────────────────────────────────────
+   Strategy:
+   - All iframes start as about:blank → zero initial download
+   - loadAllFrames() sets real src immediately for all visible cards
+   - iframe is invisible (opacity:0) until onload fires
+   - onload → frame-wrap gets .is-ready → iframe fades in, spinner fades out
+   - User sees: spinner → banner appearing from frame 0 (never mid-animation)
+   - Reload: bustUrl with fresh Date.now() bypasses server cache
+─────────────────────────────────────────────────────────────── */
+function loadAllFrames() {
+  document.querySelectorAll('.bcard-frame').forEach(f => loadFrame(f));
+}
+
+function loadFrame(frame, force = false) {
+  if (!frame) return;
+  if (backupMode && !force) return;
+  const base = frame.dataset.src;
+  if (!base) return;
+  if (!force && frame.dataset.loaded === 'true') return;
+  if (!force && frame.dataset.loading === 'true') return;
+
+  const wrap = frame.closest('.frame-wrap');
+  wrap && wrap.classList.remove('is-ready');
+  frame.dataset.loading = 'true';
+  frame.dataset.loaded  = '';
+
+  /* onload: reveal banner only after full load — no mid-animation flash */
+  frame.onload = () => {
+    if (!frame.src || frame.src === 'about:blank') return;
+    frame.dataset.loaded  = 'true';
+    frame.dataset.loading = 'false';
+    if (!backupMode) wrap && wrap.classList.add('is-ready');
+  };
+
+  frame.src = force ? bustUrl(base) : base;
+}
+
+function reloadFrame(fid) {
+  const frame = document.getElementById(fid);
+  if (!frame) return;
+  if (backupMode) {
+    /* In backup mode: reload the backup image instead */
+    const bk = frame.closest('.frame-wrap')?.querySelector('.bcard-backup-link img');
+    if (bk) {
+      const orig = bk.dataset.origSrc || bk.getAttribute('src');
+      bk.dataset.origSrc = orig;
+      bk.src = orig.startsWith('data:') ? orig : bustUrl(orig);
+    }
+    return;
+  }
+  loadFrame(frame, true);
+}
+
+function reloadAll() {
+  document.querySelectorAll('.bcard').forEach(card => {
+    if (card.style.display === 'none') return;
+    if (backupMode) {
+      const bk = card.querySelector('.bcard-backup-link img');
+      if (!bk) return;
+      const orig = bk.dataset.origSrc || bk.getAttribute('src');
+      bk.dataset.origSrc = orig;
+      bk.src = orig.startsWith('data:') ? orig : bustUrl(orig);
+    } else {
+      const f = card.querySelector('.bcard-frame');
+      if (f) loadFrame(f, true);
+    }
+  });
+  showToast(backupMode ? 'Reloading backup images…' : 'Reloading all banners…');
+}
+
+/* ── Mobile scaling ───────────────────────────────────────────
+   scale() is applied to .bcard-scale which wraps frame-wrap.
+   The shadow (on frame-wrap) is INSIDE the scaled element,
+   so it always matches the visual — no size mismatch.
+   Negative marginBottom collapses whitespace left by transform.
+─────────────────────────────────────────────────────────────── */
+function scaleAll() {
+  if (!isMob()) {
+    document.querySelectorAll('.bcard-scale').forEach(el => { el.style.cssText = ''; });
+    document.querySelectorAll('.bcard-bar').forEach(el => { el.style.width = ''; });
+    return;
+  }
+
+  const canvas = document.getElementById('canvas');
+  const safeW = canvas.clientWidth - 32;
+
+  document.querySelectorAll('.bcard').forEach(card => {
+    if (card.style.display === 'none') return;
+
+    const nW  = parseInt(card.dataset.w);
+    const nH  = parseInt(card.dataset.h);
+    const key = card.dataset.key;
+
+    const scale = Math.min(1, safeW / nW);
+
+    const scaleEl = document.getElementById(`scale-${key}`);
+    const barEl   = document.getElementById(`bar-${key}`);
+
+    if (scaleEl) {
+      scaleEl.style.transformOrigin = 'top center';
+      scaleEl.style.transform = `scale(${scale})`;
+      scaleEl.style.width = nW + 'px';
+      scaleEl.style.marginBottom = `-${Math.round(nH * (1 - scale))}px`;
+    }
+
+    if (barEl) {
+      barEl.style.width = Math.round(nW * scale) + 'px';
+    }
+  });
+}
+
+/* ── Backup mode ──────────────────────────────── */
+function toggleBackup() {
+  backupMode = !backupMode;
+  applyBackupMode(); updateBackupBtn();
+  showToast(backupMode ? 'Showing backup images' : 'Showing animated banners');
+}
+
+function applyBackupMode() {
+  document.querySelectorAll('.bcard').forEach(card => {
+    const frame  = card.querySelector('.bcard-frame');
+    const bk     = card.querySelector('.bcard-backup-link');
+    const wrap   = card.querySelector('.frame-wrap');
+    if (bk)    bk.style.display    = backupMode ? 'block'  : 'none';
+    if (frame) {
+      /* Keep iframe in DOM (preserves loaded state) — just hide/show */
+      frame.style.visibility   = backupMode ? 'hidden' : 'visible';
+      frame.style.pointerEvents = backupMode ? 'none'   : '';
+    }
+    /* Spinner: hide when in backup mode or banner already loaded */
+    if (wrap) {
+      if (backupMode) wrap.classList.add('is-ready');
+      else if (frame && frame.dataset.loaded !== 'true') wrap.classList.remove('is-ready');
+    }
+  });
+}
+
+function updateBackupBtn() {
+  const btn = document.getElementById('backupBtn');
+  btn.classList.toggle('on', backupMode);
+  document.getElementById('backupLabel').textContent = backupMode ? 'Dashboard' : 'Backups';
+  document.getElementById('backupIcon').innerHTML    = backupMode ? SVG_PLAY_ICON : SVG_IMG_ICON;
+  btn.title = backupMode ? 'Switch to animated banners' : 'Switch to backup images';
+}
+
+/* ── Filter ───────────────────────────────────── */
+function filterByKey(key, el) {
+  document.querySelectorAll('.bcard').forEach(c => {
+    const show = key === 'all' || c.dataset.key === key;
+    c.style.display = show ? '' : 'none';
+    if (show && !backupMode) {
+      const f = c.querySelector('.bcard-frame');
+      if (f && f.dataset.loaded !== 'true') loadFrame(f);
+    }
+  });
+  /* Hide sections that have no visible cards */
+  document.querySelectorAll('.canvas-section').forEach(s => {
+    s.style.display = [...s.querySelectorAll('.bcard')].some(c => c.style.display !== 'none') ? '' : 'none';
+  });
+  idx = key === 'all' ? -1 : orderedBanners().findIndex(b => cardKey(b) === key);
+  syncActiveSizeItem(); updateCounter(); updateNav();
+  requestAnimationFrame(scaleAll);
+}
+
+function showAll() { filterByKey('all'); }
+
+/* ── Navigate ─────────────────────────────────── */
+function navigate(dir) {
+  const keys = orderedBanners().map(cardKey);
+  if (idx < 0) idx = 0;
+  idx = Math.max(0, Math.min(keys.length - 1, idx + dir));
+  filterByKey(keys[idx], document.querySelector(`[data-filter="${keys[idx]}"]`));
+}
+
+function updateNav() {
+  document.getElementById('prevBtn').disabled = idx <= 0;
+  document.getElementById('nextBtn').disabled = idx < 0 || idx >= campaign.banners.length - 1;
+}
+
+function updateCounter() {
+  document.getElementById('counter').textContent = idx < 0
+    ? `Showing all ${campaign.banners.length} creatives`
+    : `Creative ${idx + 1} of ${campaign.banners.length}`;
+}
+
+/* ── View toggle ──────────────────────────────── */
+function setView(mode) {
+  document.getElementById('vbtn-grid').classList.toggle('active', mode === 'grid');
+  document.getElementById('vbtn-row').classList.toggle('active', mode === 'row');
+  document.getElementById('canvas').classList.toggle('rows', mode === 'row');
+  orderedBanners().filter(b => WIDE.has(b.size)).forEach(b => {
+    const d = DIMS[b.size] || { w: 300, h: 250 };
+    const c = document.getElementById(`card-${cardKey(b)}`);
+    if (!c) return;
+    c.style.flexBasis = mode === 'row' ? 'auto' : '100%';
+    c.style.maxWidth  = mode === 'row' ? '' : `${d.w + 4}px`;
+  });
+}
+
+/* ── Validator ────────────────────────────────── */
+function updateValidatorBtn() {
+  const has = !!(campaign.validatorUrl && campaign.validatorUrl.trim());
+  const btn = document.getElementById('validatorBtn');
+  btn.classList.toggle('no-url', !has);
+  btn.title = has ? 'Open HTML5 Validator' : 'No validator URL set';
+}
+function openValidator() {
+  const url = campaign.validatorUrl && campaign.validatorUrl.trim();
+  if (!url) { showToast('No validator URL set.'); return; }
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+/* ── Download ─────────────────────────────────── */
+function updateDlBtn() {
+  const has = !!(campaign.downloadUrl && campaign.downloadUrl.trim());
+  const btn = document.getElementById('downloadBtn');
+  btn.classList.toggle('no-url', !has);
+  btn.title = has ? `Download files for ${campaign.label}` : 'No download URL set';
+}
+// function downloadAll() {
+//   let url = campaign.downloadUrl && campaign.downloadUrl.trim();
+//   if (!url) { showToast('No download URL set for this campaign.'); return; }
+//   if (url.includes('dropbox.com'))
+//     url = url.includes('dl=') ? url.replace(/dl=\d/, 'dl=1') : url + (url.includes('?') ? '&dl=1' : '?dl=1');
+//   window.open(url, '_blank', 'noopener,noreferrer');
+//   showToast(`Downloading files for ${campaign.label}\u2026`);
+// }
+
+function getDirectDownloadUrl(url) {
+  url = url.trim();
+
+  if (url.includes('dropbox.com')) {
+    return url.includes('dl=')
+      ? url.replace(/dl=\d/, 'dl=1')
+      : url + (url.includes('?') ? '&dl=1' : '?dl=1');
+  }
+
+  return url;
+}
+
+function downloadAll() {
+  const downloads = CAMPAIGNS
+    .filter(c => c.downloadUrl && c.downloadUrl.trim())
+    .map(c => ({
+      label: c.label,
+      url: getDirectDownloadUrl(c.downloadUrl)
+    }));
+
+  if (!downloads.length) {
+    showToast('No download URLs set.');
+    return;
+  }
+
+  downloads.forEach((item, index) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.style.display = 'none';
+      a.download = `${item.label}.zip`;
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }, index * 1000);
+  });
+
+  showToast(`Starting ${downloads.length} campaign downloads…`);
+}
+
+/* ── Toast ────────────────────────────────────── */
+function showToast(msg, ms = 3000) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show'); clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+/* ── Keyboard ─────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT') return;
+  if (e.key === 'ArrowLeft')          navigate(-1);
+  if (e.key === 'ArrowRight')         navigate(1);
+  if (e.key === 'r' || e.key === 'R') reloadAll();
+  if (e.key === 'b' || e.key === 'B') toggleBackup();
+  if (e.key === 'Escape')             closeSidebar();
+});
+
+function scheduleScaleAll() {
+  requestAnimationFrame(() => {
+    scaleAll();
+    requestAnimationFrame(scaleAll);
+    setTimeout(scaleAll, 100);
+    setTimeout(scaleAll, 300);
+  });
+}
+
+window.addEventListener('resize', scheduleScaleAll);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', scheduleScaleAll);
+}
+
+window.addEventListener('orientationchange', scheduleScaleAll);
+
+init();
+</script>
+</body>
+</html>
