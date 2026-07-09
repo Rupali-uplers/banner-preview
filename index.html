@@ -43,23 +43,23 @@
 
     /* ── Sidebar ── */
     .sidebar    { width: var(--sidebar-w); min-width: var(--sidebar-w); height: 100%; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; z-index: 10; }
-    .s-head     { padding: 14px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .s-head     { padding: 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .eyebrow    { font-size: 10px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--txt-3); margin-bottom: 6px; }
     .sel-wrap   { position: relative; }
-    .sel-wrap select { width: 100%; padding: 7px 28px 7px 10px; border: 1px solid var(--border-mid); border-radius: var(--r); background: var(--bg); font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--txt); cursor: pointer; appearance: none; outline: none; transition: border-color .15s, box-shadow .15s; }
+    .sel-wrap select { width: 100%; padding: 6px 28px 6px 8px; border: 1px solid var(--border-mid); border-radius: var(--r); background: var(--bg); font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--txt); cursor: pointer; appearance: none; outline: none; transition: border-color .15s, box-shadow .15s; }
     .sel-wrap select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
     .sel-wrap .caret { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--txt-3); display: flex; }
-    .campaign-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; }
+    .campaign-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 11px; }
     .campaign-meta b { color: var(--txt); font-weight: 500; }
-    .campaign-meta .meta-date { color: var(--txt-3); font-size: 11.5px; }
+    .campaign-meta .meta-date { color: var(--txt-3); font-size: 11px; }
 
     /* Size list */
     .s-body     { flex: 1; overflow-y: auto; padding: 10px 8px; }
-    .sec-row    { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 6px; margin: 10px 0 8px; }
+    .sec-row    { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 6px; margin: 0 0 8px; }
     .sec-lbl    { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--txt-3); }
     .sec-count  { font-family: var(--mono); font-size: 11px; color: var(--txt-3); }
     .type-group { margin-bottom: 10px; }
-    .type-tag   { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 8px; border: 1px solid var(--border); border-radius: var(--r); background: var(--bg); color: var(--txt-2); font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-align: left; cursor: default; }
+    .type-tag   { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--r); background: var(--bg); color: var(--txt-2); font-family: var(--font); font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-align: left; cursor: default; }
     .type-tag.disabled { opacity: .4; }
     .type-tag-count { font-family: var(--mono); font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--txt-3); }
     .size-list  { list-style: none; margin-top: 4px; }
@@ -71,13 +71,13 @@
     .size-item.active .sl { color: var(--accent-dark); font-weight: 500; }
     .size-item.active .sw { color: var(--accent-dark); opacity: .7; }
     .sl { font-family: var(--mono); font-size: 12px; color: var(--txt); }
-    .preview-link { font-size: 12px; text-decoration: none; padding: 2px 5px; line-height: 12px; display: flex; align-items: center; justify-content: center;
+    .preview-link { font-size: 12px; text-decoration: none; padding: 0px 5px; line-height: 12px; display: flex; align-items: center; justify-content: center;
     vertical-align: middle; color: var(--txt); transition: ease all 0.3s;}
     .preview-link:hover { color: var(--accent); transform: scale(1.1); }
 
     /* Sidebar footer */
-    .s-foot     { padding: 10px 8px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-    .btn        { width: 100%; padding: 8px 10px; border-radius: var(--r); font-family: var(--font); font-size: 12.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; outline: none; transition: background .15s, color .15s; white-space: nowrap; }
+    .s-foot     { padding: 10px 8px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .btn        { width: 100%; padding: 6px 10px; border-radius: var(--r); font-family: var(--font); font-size: 11px; line-height: 1.2; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; outline: none; transition: background .15s, color .15s; white-space: nowrap; }
     .btn-ghost  { background: transparent; border: 1px solid var(--border-mid) !important; color: var(--txt-2); }
     .btn-ghost:hover  { background: var(--bg); color: var(--txt); }
     .btn-backup { background: transparent; border: 1px solid var(--border-mid) !important; color: var(--txt-2); }
@@ -88,6 +88,8 @@
     .btn-valid.no-url { opacity: .4; cursor: not-allowed; pointer-events: none; }
     .btn-dl     { background: var(--accent); color: #fff; font-weight: 500; }
     .btn-dl:hover     { background: var(--accent-dark); }
+    .btn-dl-all { background: var(--txt); }
+    .btn-dl-all:hover { background: #000; }
     .btn-dl.no-url    { opacity: .4; cursor: not-allowed; pointer-events: none; }
 
     /* ── Main ── */
@@ -95,15 +97,15 @@
     .topbar     { height: var(--bar-h); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--surface); border-bottom: 1px solid var(--border); gap: 10px; }
     .t-left, .t-right { display: flex; align-items: center; gap: 8px; }
     .mob-menu-btn { display: none; width: 34px; height: 34px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; align-items: center; justify-content: center; color: var(--txt-2); flex-shrink: 0; }
-    .nav-btn    { width: 28px; height: 28px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--txt-2); transition: background .1s; flex-shrink: 0; }
+    .nav-btn    { width: 24px; height: 24px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--txt-2); transition: background .1s; flex-shrink: 0; }
     .nav-btn:hover    { background: var(--bg); }
     .nav-btn:disabled { opacity: .3; cursor: default; }
-    .pill       { font-size: 12px; color: var(--txt-3); white-space: nowrap; padding: 3px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; }
-    .btn-sm     { height: 28px; padding: 0 11px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: var(--font); font-size: 12px; color: var(--txt-2); white-space: nowrap; transition: background .1s; }
+    .pill       { font-size: 11px; color: var(--txt-3); white-space: nowrap; padding: 3px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; }
+    .btn-sm     { height: 28px; padding: 0 10px; border: 1px solid var(--border-mid); border-radius: var(--r); background: transparent; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: var(--font); font-size: 11px; color: var(--txt-2); white-space: nowrap; transition: background .1s; }
     .btn-sm:hover { background: var(--bg); color: var(--txt); }
     .btn-sm .lbl { display: inline; }
     .view-grp   { display: flex; border: 1px solid var(--border-mid); border-radius: var(--r); overflow: hidden; }
-    .vbtn       { width: 28px; height: 28px; border: none; border-right: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--txt-3); transition: background .1s; }
+    .vbtn       { width: 26px; height: 26px; border: none; border-right: 1px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--txt-3); transition: background .1s; }
     .vbtn:last-child { border-right: none; }
     .vbtn.active { background: var(--bg); color: var(--txt); }
 
@@ -117,15 +119,15 @@
 
     /* ── Banner card ── */
     .bcard      { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; }
-    .bcard-bar  { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 2px; margin-bottom: 6px; opacity: .55; transition: opacity .15s; }
+    .bcard-bar  { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 2px; margin-bottom: 5px; opacity: .55; transition: opacity .15s; }
     .bcard:hover .bcard-bar { opacity: 1; }
     .bar-left   { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
     .bar-right  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    .bar-size   { font-family: var(--mono); font-size: 11px; color: var(--txt-2); white-space: nowrap; }
-    .bar-weight { font-family: var(--mono); font-size: 10.5px; color: var(--txt-3); white-space: nowrap; }
+    .bar-size   { font-family: var(--mono); font-size: 10px; color: var(--txt-2); white-space: nowrap; }
+    .bar-weight { font-family: var(--mono); font-size: 10px; color: var(--txt-3); white-space: nowrap; }
     .tag        { font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; border-radius: 20px; padding: 2px 6px; white-space: nowrap; flex-shrink: 0; }
     .tag-backup { display: none; background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bdr); }
-    .reload-btn { width: 22px; height: 22px; border: none; background: transparent; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: var(--txt-3); transition: background .1s, color .1s; flex-shrink: 0; }
+    .reload-btn { width: 18px; height: 18px; border: none; background: transparent; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: var(--txt-3); transition: background .1s, color .1s; flex-shrink: 0; }
     .reload-btn:hover { background: rgba(0,0,0,.07); color: var(--txt); }
 
     /* frame-wrap: shadow always matches visible content size */
@@ -220,11 +222,11 @@
       /* JS sets the responsive layout size on .bcard-scale and scales .frame-wrap */
       .bcard-scale { position: relative; }
       .s-foot     { flex-direction: row; flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
-      .s-foot .btn { width: auto; flex: 1; min-width: 90px; font-size: 11px; padding: 8px 6px; }
+      .s-foot .btn { width: auto; flex: 1; min-width: 90px; }
     }
     @media (max-width: 400px) {
       .pill { font-size: 10px; padding: 3px 6px; }
-      .s-foot .btn { font-size: 10.5px; }
+      .s-foot .btn { font-size: 10px; }
     }
   </style>
 </head>
@@ -236,7 +238,7 @@
   <!-- ── Sidebar ── -->
   <aside class="sidebar" id="sidebar">
     <div class="s-head">
-      <div class="eyebrow">Campaign</div>
+      <div class="eyebrow">Campaigns</div>
       <div class="sel-wrap">
         <select id="campaignSelect" onchange="switchCampaign(this.value)"></select>
         <span class="caret">
@@ -267,9 +269,13 @@
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         HTML5 Validator
       </button>
-      <button class="btn btn-dl" id="downloadBtn" onclick="downloadAll()">
+      <button class="btn btn-dl" id="downloadCampaignBtn" onclick="downloadCampaign()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 10v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Download files
+        Campaign Zip
+      </button>
+      <button class="btn btn-dl btn-dl-all" id="downloadAllBtn" onclick="downloadAll()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 10v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        All Campaign Zip
       </button>
     </div>
   </aside>
@@ -325,7 +331,7 @@
    PROJECT DATA — set CLIENT once, shared by all campaigns
 ═══════════════════════════════════════════════════════════ */
 const CLIENT = 'Alkermes';
-const ALL_CAMPAIGNS_URL = ''; // ← paste master download link here
+const ALL_CAMPAIGNS_URL = 'https://www.dropbox.com/scl/fo/r6dklhjtxjlzzb8oe7440/AIBOWhJ129ur_RA51sxM6AY?rlkey=3j1ls42bc3mgunedrhns9pfwq&st=21194xuu&dl=0'; // ← paste master download link here
 
 /* ═══════════════════════════════════════════════════════════
    CAMPAIGN DATA — add/edit campaigns here only
@@ -481,7 +487,7 @@ function switchCampaign(id) {
   idx = -1; backupMode = false;
   document.title = `${CLIENT} - Creative Collection`;
   renderMeta(); renderSizeList(); renderCanvas();
-  updateCounter(); updateNav(); updateDlBtn(); updateValidatorBtn(); updateBackupBtn();
+  updateCounter(); updateNav(); updateDownloadBtns(); updateValidatorBtn(); updateBackupBtn();
 }
 
 function renderMeta() {
@@ -863,20 +869,23 @@ function openValidator() {
 }
 
 /* ── Download ─────────────────────────────────── */
-function updateDlBtn() {
-  // Button is always clickable — downloadAll() shows a toast if nothing is configured.
-  // We only grey it out if truly nothing is set anywhere.
-  const hasMaster = !!(ALL_CAMPAIGNS_URL && ALL_CAMPAIGNS_URL.trim());
-  const hasAny    = hasMaster || CAMPAIGNS.some(c => c.downloadUrl && c.downloadUrl.trim());
-  const btn       = document.getElementById('downloadBtn');
-  btn.classList.toggle('no-url', !hasAny);
-  btn.title = hasMaster
-    ? 'Download all campaigns'
-    : hasAny
-      ? 'Download all campaign files'
-      : 'No download URLs configured';
-}
+function updateDownloadBtns() {
+  const campaignUrl = !!(campaign && campaign.downloadUrl && campaign.downloadUrl.trim());
+  const masterUrl   = !!(ALL_CAMPAIGNS_URL && ALL_CAMPAIGNS_URL.trim());
 
+  const campaignBtn = document.getElementById('downloadCampaignBtn');
+  const allBtn      = document.getElementById('downloadAllBtn');
+
+  if (campaignBtn) {
+    campaignBtn.style.display = campaignUrl ? '' : 'none';
+    campaignBtn.title = campaignUrl ? `Download ${campaign.label}` : '';
+  }
+
+  if (allBtn) {
+    allBtn.style.display = masterUrl ? '' : 'none';
+    allBtn.title = masterUrl ? 'Download all campaigns' : '';
+  }
+}
 
 function getDirectDownloadUrl(url) {
   url = url.trim();
@@ -890,38 +899,27 @@ function getDirectDownloadUrl(url) {
   return url;
 }
 
+function openDownload(url, toastMsg) {
+  const a = document.createElement('a');
+  a.href = getDirectDownloadUrl(url);
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast(toastMsg);
+}
+
+function downloadCampaign() {
+  const url = campaign && campaign.downloadUrl && campaign.downloadUrl.trim();
+  if (!url) { showToast('No campaign download URL set.'); return; }
+  openDownload(url, `Opening ${campaign.label} download…`);
+}
+
 function downloadAll() {
-  // ── Option A: master link — one click, one tab, works everywhere ──────────
-  if (ALL_CAMPAIGNS_URL && ALL_CAMPAIGNS_URL.trim()) {
-    const a = document.createElement('a');
-    a.href = getDirectDownloadUrl(ALL_CAMPAIGNS_URL.trim());
-    a.target = '_blank'; a.rel = 'noopener noreferrer';
-    document.body.appendChild(a); a.click(); a.remove();
-    showToast('Opening master download…');
-    return;
-  }
-
-  // ── Option B: one tab per campaign (may be blocked by Safari) ────────────
-  const downloads = CAMPAIGNS
-    .filter(c => c.downloadUrl && c.downloadUrl.trim())
-    .map(c => ({ label: c.label, url: getDirectDownloadUrl(c.downloadUrl) }));
-
-  if (!downloads.length) { showToast('No download URLs set.'); return; }
-
-  downloads.forEach((item, index) => {
-    setTimeout(() => {
-      const a = document.createElement('a');
-      a.href = item.url; a.target = '_blank';
-      a.rel = 'noopener noreferrer'; a.style.display = 'none';
-      document.body.appendChild(a); a.click(); a.remove();
-    }, index * 800);
-  });
-
-  showToast(
-    downloads.length === 1
-      ? 'Opening download…'
-      : `Opening ${downloads.length} campaign downloads…`
-  );
+  const url = ALL_CAMPAIGNS_URL && ALL_CAMPAIGNS_URL.trim();
+  if (!url) { showToast('No master download URL set.'); return; }
+  openDownload(url, 'Opening all campaign downloads…');
 }
 
 /* ── Toast ────────────────────────────────────── */
