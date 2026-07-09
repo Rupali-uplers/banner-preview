@@ -108,10 +108,10 @@
     .vbtn.active { background: var(--bg); color: var(--txt); }
 
     /* ── Canvas ── */
-    .canvas     { flex: 1; overflow: auto; padding: 24px; display: flex; flex-direction: column; gap: 28px; align-items: stretch; }
+    .canvas     { flex: 1; overflow: auto; padding: 20px; display: flex; flex-direction: column; gap: 28px; align-items: stretch; }
     .canvas-section { width: 100%; }
     .canvas-section + .canvas-section { border-top: 1px solid var(--border); padding-top: 24px; }
-    .section-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--txt-3); margin-bottom: 14px; padding: 0 2px; }
+    .section-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--txt-3); margin-bottom: 10px; padding: 0 2px; }
     .section-grid { display: flex; flex-wrap: wrap; gap: 24px; align-content: flex-start; align-items: flex-start; }
     .canvas.rows .section-grid { flex-direction: column; flex-wrap: nowrap; }
 
@@ -178,6 +178,7 @@
     }
     .frame-wrap.is-short .loading-title { font-size: clamp(8px, calc(var(--frame-h, 90px) * 0.22), 11px); }
     .frame-wrap.is-short .loading-sub   { font-size: clamp(7px, calc(var(--frame-h, 90px) * 0.16), 10px); margin-top: 1px; }
+    .zoom-tooltip { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; color:#D97706; cursor:default; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .bcard-backup-link { display: none; position: absolute; inset: 0; }
@@ -216,8 +217,8 @@
       .canvas-section + .canvas-section { padding-top: 20px; }
       .bcard      { align-items: center; width: 100% !important; max-width: 100% !important; flex-basis: auto !important; }
       .bcard-bar  { opacity: 1; }
-      /* JS sets transform/width/marginBottom on .bcard-scale */
-      .bcard-scale { transform-origin: top center!important; }
+      /* JS sets the responsive layout size on .bcard-scale and scales .frame-wrap */
+      .bcard-scale { position: relative; }
       .s-foot     { flex-direction: row; flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
       .s-foot .btn { width: auto; flex: 1; min-width: 90px; font-size: 11px; padding: 8px 6px; }
     }
@@ -268,7 +269,7 @@
       </button>
       <button class="btn btn-dl" id="downloadBtn" onclick="downloadAll()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 10v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Download all files
+        Download files
       </button>
     </div>
   </aside>
@@ -287,6 +288,13 @@
         <button class="nav-btn" id="nextBtn" onclick="navigate(1)" disabled title="Next (→)">
           <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M5 3L9 7L5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
+        <span class="zoom-tooltip" title="Best viewed at 100% zoom">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3L22 20H2L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M12 9V13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 17H12.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
       </div>
       <div class="t-right">
         <button class="btn-sm" onclick="reloadAll()" title="Reload all (R)">
@@ -317,6 +325,7 @@
    PROJECT DATA — set CLIENT once, shared by all campaigns
 ═══════════════════════════════════════════════════════════ */
 const CLIENT = 'Alkermes';
+const ALL_CAMPAIGNS_URL = ''; // ← paste master download link here
 
 /* ═══════════════════════════════════════════════════════════
    CAMPAIGN DATA — add/edit campaigns here only
@@ -702,37 +711,52 @@ function reloadAll() {
    Negative marginBottom collapses whitespace left by transform.
 ─────────────────────────────────────────────────────────────── */
 function scaleAll() {
-  if (!isMob()) {
-    document.querySelectorAll('.bcard-scale').forEach(el => { el.style.cssText = ''; });
-    document.querySelectorAll('.bcard-bar').forEach(el => { el.style.width = ''; });
-    return;
-  }
-
   const canvas = document.getElementById('canvas');
-  const safeW = canvas.clientWidth - 32;
 
   document.querySelectorAll('.bcard').forEach(card => {
     if (card.style.display === 'none') return;
 
-    const nW  = parseInt(card.dataset.w);
-    const nH  = parseInt(card.dataset.h);
+    const nW  = parseInt(card.dataset.w, 10);
+    const nH  = parseInt(card.dataset.h, 10);
     const key = card.dataset.key;
-
-    const scale = Math.min(1, safeW / nW);
 
     const scaleEl = document.getElementById(`scale-${key}`);
     const barEl   = document.getElementById(`bar-${key}`);
+    const wrapEl  = document.getElementById(`wrap-${key}`);
+    if (!scaleEl || !wrapEl) return;
 
-    if (scaleEl) {
-      scaleEl.style.transformOrigin = 'left center';
-      scaleEl.style.transform = `scale(${scale})`;
-      scaleEl.style.width = nW + 'px';
-      scaleEl.style.height = Math.round(nH * scale) + 'px';
-      scaleEl.style.marginBottom = '0';
-    }
+    /*
+      Scale from the real available card/canvas width, not from a mobile
+      breakpoint. Chrome device emulation can keep desktop CSS active while
+      changing the visual viewport, so breakpoint-only scaling breaks there.
+    */
+    const grid = card.closest('.section-grid');
+    const availableW = Math.max(
+      0,
+      Math.min(
+        grid ? grid.clientWidth : canvas.clientWidth,
+        canvas.clientWidth
+      ) - 4
+    );
+
+    const scale = Math.min(1, availableW / nW);
+    const visualW = Math.round(nW * scale);
+    const visualH = Math.round(nH * scale);
+
+    /*
+      Keep the iframe at its true creative size, but scale the visual wrapper.
+      The parent gets the scaled layout size, so there is no overflow/blank
+      spacing on desktop, responsive mode, or real mobile devices.
+    */
+    scaleEl.style.width = visualW + 'px';
+    scaleEl.style.height = visualH + 'px';
+    scaleEl.style.marginBottom = '0';
+
+    wrapEl.style.transformOrigin = 'top left';
+    wrapEl.style.transform = `scale(${scale})`;
 
     if (barEl) {
-      barEl.style.width = Math.round(nW * scale) + 'px';
+      barEl.style.width = visualW + 'px';
     }
   });
 }
@@ -840,19 +864,19 @@ function openValidator() {
 
 /* ── Download ─────────────────────────────────── */
 function updateDlBtn() {
-  const has = !!(campaign.downloadUrl && campaign.downloadUrl.trim());
-  const btn = document.getElementById('downloadBtn');
-  btn.classList.toggle('no-url', !has);
-  btn.title = has ? `Download files for ${campaign.label}` : 'No download URL set';
+  // Button is always clickable — downloadAll() shows a toast if nothing is configured.
+  // We only grey it out if truly nothing is set anywhere.
+  const hasMaster = !!(ALL_CAMPAIGNS_URL && ALL_CAMPAIGNS_URL.trim());
+  const hasAny    = hasMaster || CAMPAIGNS.some(c => c.downloadUrl && c.downloadUrl.trim());
+  const btn       = document.getElementById('downloadBtn');
+  btn.classList.toggle('no-url', !hasAny);
+  btn.title = hasMaster
+    ? 'Download all campaigns'
+    : hasAny
+      ? 'Download all campaign files'
+      : 'No download URLs configured';
 }
-// function downloadAll() {
-//   let url = campaign.downloadUrl && campaign.downloadUrl.trim();
-//   if (!url) { showToast('No download URL set for this campaign.'); return; }
-//   if (url.includes('dropbox.com'))
-//     url = url.includes('dl=') ? url.replace(/dl=\d/, 'dl=1') : url + (url.includes('?') ? '&dl=1' : '?dl=1');
-//   window.open(url, '_blank', 'noopener,noreferrer');
-//   showToast(`Downloading files for ${campaign.label}\u2026`);
-// }
+
 
 function getDirectDownloadUrl(url) {
   url = url.trim();
@@ -867,34 +891,37 @@ function getDirectDownloadUrl(url) {
 }
 
 function downloadAll() {
-  const downloads = CAMPAIGNS
-    .filter(c => c.downloadUrl && c.downloadUrl.trim())
-    .map(c => ({
-      label: c.label,
-      url: getDirectDownloadUrl(c.downloadUrl)
-    }));
-
-  if (!downloads.length) {
-    showToast('No download URLs set.');
+  // ── Option A: master link — one click, one tab, works everywhere ──────────
+  if (ALL_CAMPAIGNS_URL && ALL_CAMPAIGNS_URL.trim()) {
+    const a = document.createElement('a');
+    a.href = getDirectDownloadUrl(ALL_CAMPAIGNS_URL.trim());
+    a.target = '_blank'; a.rel = 'noopener noreferrer';
+    document.body.appendChild(a); a.click(); a.remove();
+    showToast('Opening master download…');
     return;
   }
+
+  // ── Option B: one tab per campaign (may be blocked by Safari) ────────────
+  const downloads = CAMPAIGNS
+    .filter(c => c.downloadUrl && c.downloadUrl.trim())
+    .map(c => ({ label: c.label, url: getDirectDownloadUrl(c.downloadUrl) }));
+
+  if (!downloads.length) { showToast('No download URLs set.'); return; }
 
   downloads.forEach((item, index) => {
     setTimeout(() => {
       const a = document.createElement('a');
-      a.href = item.url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.style.display = 'none';
-      a.download = `${item.label}.zip`;
-
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }, index * 1000);
+      a.href = item.url; a.target = '_blank';
+      a.rel = 'noopener noreferrer'; a.style.display = 'none';
+      document.body.appendChild(a); a.click(); a.remove();
+    }, index * 800);
   });
 
-  showToast(`Starting ${downloads.length} campaign downloads…`);
+  showToast(
+    downloads.length === 1
+      ? 'Opening download…'
+      : `Opening ${downloads.length} campaign downloads…`
+  );
 }
 
 /* ── Toast ────────────────────────────────────── */
@@ -915,6 +942,14 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape')             closeSidebar();
 });
 
+function detectBrowserZoom() {
+    const zoom = Math.round((window.devicePixelRatio || 1) * 100);
+
+    if (zoom !== 100) {
+        console.warn(`Browser zoom is ${zoom}%. Responsive preview may not be accurate. Use Ctrl+0 before testing.`);
+    }
+}
+
 function scheduleScaleAll() {
   requestAnimationFrame(() => {
     scaleAll();
@@ -924,13 +959,24 @@ function scheduleScaleAll() {
   });
 }
 
-window.addEventListener('resize', scheduleScaleAll);
+window.addEventListener('resize', () => {
+    scheduleScaleAll();
+    detectBrowserZoom();
+});
 
 if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', scheduleScaleAll);
+    window.visualViewport.addEventListener('resize', () => {
+        scheduleScaleAll();
+        detectBrowserZoom();
+    });
 }
 
-window.addEventListener('orientationchange', scheduleScaleAll);
+window.addEventListener('orientationchange', () => {
+    scheduleScaleAll();
+    detectBrowserZoom();
+});
+
+detectBrowserZoom();
 
 init();
 </script>
